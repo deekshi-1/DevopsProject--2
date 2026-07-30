@@ -1,0 +1,53 @@
+# ===== Terraform =====
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+.terraform.lock.hcl
+
+# ===== Ansible =====
+*.retry
+.vault_pass
+vault_pass.txt
+*.vault
+
+# ===== AWS / secrets =====
+*.pem
+*.key
+.aws/
+credentials
+aws_credentials
+
+# ===== SSH keys =====
+*.pem
+*.ppk
+id_rsa
+id_rsa.pub
+
+# ===== Environment / secrets =====
+.env
+.env.*
+secrets.yml
+secrets.yaml
+
+# ===== OS junk =====
+.DS_Store
+Thumbs.db
+
+# ===== Editor / IDE =====
+.vscode/
+.idea/
+*.swp
+
+# ===== Logs =====
+*.log

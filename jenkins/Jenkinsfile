@@ -17,9 +17,11 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
                 dir(TF_DIR) { sh 'terraform init -input=false' }
+                }
             }
-        }
+         }
 
         stage('Terraform Plan') {
             steps {
@@ -60,7 +62,7 @@ pipeline {
             steps {
                 sh 'bash  scripts/validate.sh'
             }
-        }
+        }   
     }
 
     post {

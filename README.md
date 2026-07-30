@@ -380,6 +380,7 @@ The following screenshots demonstrate the successful deployment of the infrastru
 
 <img src="screenshots/deliverables/manultrigger.png" width="100%"/>
 <td align="center"><b>manual trigger</b></td>
+
 ## License
 
 This project is intended for educational and demonstration purposes. Feel free to modify and extend it to suit your infrastructure automation requirements.

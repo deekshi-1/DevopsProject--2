@@ -105,7 +105,9 @@ pipeline {
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-creds'
                 ]]) {
-                    sh 'bash scripts/validate.sh'
+                    sshagent(credentials: ['ec2-ssh-key']) {
+                        sh 'bash scripts/validate.sh'
+                    }
                 }
             }
         }

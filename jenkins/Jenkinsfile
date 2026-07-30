@@ -105,7 +105,7 @@ pipeline {
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-creds'
                 ]]) {
-                    sh 'bash scripts/validate_infra.sh'
+                    sh 'bash scripts/validate.sh'
                 }
             }
         }

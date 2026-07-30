@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'ENVIRONMENT', choices: ['dev'], description: 'Target environment')
+    }
+
+    environment {
+        TF_DIR = "terraform/environments/${params.ENVIRONMENT}"
+        AWS_DEFAULT_REGION = "us-east-1"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps { checkout scm }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                dir(TF_DIR) { sh 'terraform init -input=false' }
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                dir(TF_DIR) { sh 'terraform plan -out=tfplan -var-file=terraform.tfvars' }
+            }
+        }
+
+        stage('Manual Approval') {
+            steps {
+                input message: "Apply the plan above to ${params.ENVIRONMENT}?", ok: 'Apply'
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                dir(TF_DIR) { sh 'terraform apply -input=false tfplan' }
+            }
+        }
+
+        stage('Wait for hosts to be reachable') {
+            steps {
+                sh '''
+                    sleep 30
+                    ansible-inventory -i ansible/inventory/aws_ec2.yml --list > /dev/null
+                '''
+            }
+        }
+
+        stage('Run Ansible Playbooks') {
+            steps {
+                dir('ansible') {
+                    sh 'ansible-playbook -i inventory/aws_ec2.yml site.yml'
+                }
+            }
+        }
+
+        stage('Validate Infrastructure') {
+            steps {
+                sh 'bash  scripts/validate.sh'
+            }
+        }
+    }
+
+    post {
+        success { echo "Pipeline succeeded for ${params.ENVIRONMENT}" }
+        failure { echo "Pipeline failed — check stage logs above" }
+    }
+}

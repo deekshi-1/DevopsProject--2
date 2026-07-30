@@ -1,4 +1,4 @@
-# DevopsProject--2
+# DevOps Project 2
 ## Infrastructure Automation Platform Terraform | Ansible | AWS | Jenkins | Docker
 This project demonstrates a complete Infrastructure as Code (IaC) and Configuration Management solution for provisioning and managing cloud infrastructure on Amazon Web Services (AWS).
 
@@ -232,7 +232,7 @@ terraform destroy
 
 
 ## Ansible
-All Ansible playbooks, inventories, and roles are located in the[Ansible](/ansible) directory.
+All Ansible playbooks, inventories, and roles are located in the [Ansible](/ansible) directory.
 
 The project uses the AWS EC2 Dynamic Inventory Plugin, allowing Ansible to automatically discover EC2 instances created by Terraform.
 
@@ -260,7 +260,7 @@ The playbook performs the following tasks:
 - Configure system settings
 - Start and enable required services
 
-Ansible playbooks are idempotent, meaning they can be executed multiple times without introducing duplicate configurations. Re-running the playbook against an already configured server should report 0 changed for resources that are already in the desired state.
+Ansible playbooks are idempotent, meaning they can be executed multiple times without introducing duplicate configurations. Re-running the playbook against an already configured server should report 0 changed resources that are already in the desired state.
 
  <p align=center><img src="screenshots/ansible/ansibleresult.png" width="500"/></p>
 
@@ -350,7 +350,7 @@ The following screenshots demonstrate the successful deployment of the infrastru
     <td align="center"><img src="screenshots/deliverables/private-rt.png" width="100%"/></td>
   </tr>
   <tr>
-    <td align="center"><b>Nat</b></td>
+    <td align="center"><b>NAT</b></td>
     <td align="center"><b>Internet Gateway</b></td>
   </tr>
   <tr>
@@ -359,15 +359,15 @@ The following screenshots demonstrate the successful deployment of the infrastru
   </tr>
   <tr>
     <td align="center"><b>S3-Bucket</b></td>
-    <td align="center"><b>Dynamo</b></td>
+    <td align="center"><b>Dynamo DB</b></td>
   </tr>
   <tr>
     <td align="center"><img src="screenshots/deliverables/tfstatebucket.png" width="100%"/></td>
     <td align="center"><img src="screenshots/deliverables/dynamo.png" width="100%"/></td>
   </tr>
   <tr>
-    <td align="center"><b>Instance</b></td>
-    <td align="center"><b>Security</b></td>
+    <td align="center"><b>EC2 Instance</b></td>
+    <td align="center"><b>Security Group</b></td>
   </tr>
   <tr>
     <td align="center"><img src="screenshots/deliverables/instance.png" width="100%"/></td>
@@ -379,7 +379,7 @@ The following screenshots demonstrate the successful deployment of the infrastru
 <img src="screenshots/deliverables/pipeline.png" width="100%"/>
 
 <img src="screenshots/deliverables/manultrigger.png" width="100%"/>
-<td align="center"><b>manual trigger</b></td>
+<td align="center"><b>Manual Trigger</b></td>
 
 ## License
 

@@ -378,6 +378,8 @@ The following screenshots demonstrate the successful deployment of the infrastru
 ## Pipeline Image 
 <img src="screenshots/deliverables/pipeline.png" width="100%"/>
 
+<img src="screenshots/deliverables/manultrigger.png" width="100%"/>
+<td align="center"><b>manual trigger</b></td>
 ## License
 
 This project is intended for educational and demonstration purposes. Feel free to modify and extend it to suit your infrastructure automation requirements.

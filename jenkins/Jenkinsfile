@@ -6,26 +6,41 @@ pipeline {
     }
 
     environment {
-        TF_DIR = "terraform/environments/${params.ENVIRONMENT}"
-        AWS_DEFAULT_REGION = "us-east-1"
+        TF_DIR              = "terraform/environments/${params.ENVIRONMENT}"
+        AWS_DEFAULT_REGION  = "us-east-1"
     }
 
     stages {
+
         stage('Checkout') {
-            steps { checkout scm }
+            steps {
+                checkout scm
+            }
         }
 
         stage('Terraform Init') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
-                dir(TF_DIR) { sh 'terraform init -input=false' }
+                withCredentials([
+                    string(credentialsId: 'aws-access-key-id',     variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    dir(TF_DIR) {
+                        sh 'terraform init -input=false'
+                    }
                 }
             }
-         }
+        }
 
         stage('Terraform Plan') {
             steps {
-                dir(TF_DIR) { sh 'terraform plan -out=tfplan -var-file=terraform.tfvars' }
+                withCredentials([
+                    string(credentialsId: 'aws-access-key-id',     variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    dir(TF_DIR) {
+                        sh 'terraform plan -out=tfplan -var-file=terraform.tfvars'
+                    }
+                }
             }
         }
 
@@ -37,36 +52,64 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                dir(TF_DIR) { sh 'terraform apply -input=false tfplan' }
+                withCredentials([
+                    string(credentialsId: 'aws-access-key-id',     variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    dir(TF_DIR) {
+                        sh 'terraform apply -input=false tfplan'
+                    }
+                }
             }
         }
 
         stage('Wait for hosts to be reachable') {
             steps {
-                sh '''
-                    sleep 30
-                    ansible-inventory -i ansible/inventory/aws_ec2.yml --list > /dev/null
-                '''
+                withCredentials([
+                    string(credentialsId: 'aws-access-key-id',     variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh '''
+                        sleep 30
+                        ansible-inventory -i ansible/inventory/aws_ec2.yml --list > /dev/null
+                    '''
+                }
             }
         }
 
         stage('Run Ansible Playbooks') {
             steps {
-                dir('ansible') {
-                    sh 'ansible-playbook -i inventory/aws_ec2.yml site.yml'
+                withCredentials([
+                    string(credentialsId: 'aws-access-key-id',     variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sshagent(credentials: ['ec2-ssh-key']) {
+                        dir('ansible') {
+                            sh 'ansible-playbook -i inventory/aws_ec2.yml site.yml'
+                        }
+                    }
                 }
             }
         }
 
         stage('Validate Infrastructure') {
             steps {
-                sh 'bash  scripts/validate.sh'
+                withCredentials([
+                    string(credentialsId: 'aws-access-key-id',     variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh 'bash scripts/validate_infra.sh'
+                }
             }
-        }   
+        }
     }
 
     post {
-        success { echo "Pipeline succeeded for ${params.ENVIRONMENT}" }
-        failure { echo "Pipeline failed — check stage logs above" }
+        success {
+            echo "Pipeline succeeded for ${params.ENVIRONMENT}"
+        }
+        failure {
+            echo "Pipeline failed — check stage logs above"
+        }
     }
 }

@@ -1,0 +1,13 @@
+---
+ansible_user: ubuntu
+ansible_python_interpreter: /usr/bin/python3
+
+# Used by the jenkins_agent role to know where to pull agent.jar from
+jenkins_controller_url: "jenkins.example.com:8080"
+
+# Used by the app_deploy role
+app_name: hello-app
+app_port: 5000
+
+# Used by the nginx role's template
+proxy_upstream_port: "{{ app_port }}"

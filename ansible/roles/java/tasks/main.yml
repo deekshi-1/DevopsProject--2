@@ -1,0 +1,5 @@
+---
+- name: Install OpenJDK (needed by Jenkins agent)
+  apt:
+    name: openjdk-17-jre-headless
+    state: present

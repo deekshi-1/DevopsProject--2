@@ -1,0 +1,19 @@
+---
+- name: Create jenkins user
+  user:
+    name: jenkins
+    shell: /bin/bash
+    create_home: true
+
+- name: Create agent working directory
+  file:
+    path: "{{ jenkins_agent_home }}"
+    state: directory
+    owner: jenkins
+    group: jenkins
+
+- name: Download agent.jar from controller
+  get_url:
+    url: "http://{{ jenkins_controller_url }}/jnlpJars/agent.jar"
+    dest: "{{ jenkins_agent_home }}/agent.jar"
+    owner: jenkins

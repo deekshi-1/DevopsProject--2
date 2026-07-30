@@ -1,0 +1,21 @@
+- name: Configure app servers
+  hosts: role_app_server
+  become: true
+  roles:
+    - common
+    - docker
+    - k8s_prereqs
+    - nginx
+    - java
+    - git
+    - app_deploy
+
+- name: Configure Jenkins agent
+  hosts: role_jenkins_agent
+  become: true
+  roles:
+    - common
+    - java
+    - git
+    - docker
+    - jenkins_agent

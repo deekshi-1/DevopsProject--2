@@ -1,0 +1,21 @@
+---
+- name: Copy application source
+  copy:
+    src: "{{ app_source_path }}"
+    dest: "{{ app_dest_path }}"
+
+- name: Build Docker image
+  community.docker.docker_image:
+    name: "{{ app_name }}"
+    build:
+      path: "{{ app_dest_path }}"
+    source: build
+
+- name: Run app container
+  community.docker.docker_container:
+    name: "{{ app_name }}"
+    image: "{{ app_name }}"
+    state: started
+    restart_policy: always
+    ports:
+      - "{{ app_port }}:5000"
